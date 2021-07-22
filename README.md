@@ -1,6 +1,6 @@
 # IAM-Bridge Integration
 
-This document describes the steps to Install the `IAM-Bridge` Chart for the integration between IBM Cloud Pak® for Security and a IBM Security Verify® instance.
+This document describes the steps to Install the `IAM-Bridge` Chart for the integration between IBM Cloud Pak® for Security and IBM Security Verify® instance.
 
 # Summary
 
