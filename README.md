@@ -12,7 +12,7 @@ This document describes the steps to Install the `IAM-Bridge` Chart for the inte
 
 1. Ensure you have [helm 3](https://www.ibm.com/docs/en/cloud-paks/cp-security/1.7.0?topic=tasks-installing-developer-tools#helm-v324) installed in your PATH.
 
-2. Ensure you are authenticated with an administrator user in your Openshift cluster.
+2. Ensure you are authenticated with an administrator user in your Openshift 4.6+ cluster.
 
 ## IAM-Bridge Chart Deployment
 
