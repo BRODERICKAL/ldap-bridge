@@ -16,9 +16,9 @@ This document describes the steps to Install the `IAM-Bridge` Chart for the inte
 
 ## IAM-Bridge Chart Deployment
 
-To deploy the chart:
+To deploy the Chart:
 
-1. Set the required Environment variables
+1. Set the required Environment variables.
 
 ```
     VERIFY_URL=<YOUR_VERIFY_URL>
@@ -33,19 +33,19 @@ To deploy the chart:
     git clone https://github.com/BRODERICKAL/ldap-bridge.git bridge
     ```
 
-3.  Update the chart's values.yaml file
+3.  Update the chart's values.yaml file.
 
     ```
     sed -i '' "s#{{ VERIFY_URL }}#${VERIFY_URL}#; s#{{ VERIFY_CLIENT_ID }}#${VERIFY_CLIENT_ID}#; s#{{ VERIFY_CLIENT_SECRET }}#${VERIFY_CLIENT_SECRET}#" iam-bridge-chart/values.yaml
     ```
 
-4. Install the Chart
+4. Install the Chart.
 
     ```
     helm upgrade --install cp4s-saas-iam-bridge-chart --namespace=${CP4S_NAMESPACE} ./iam-bridge-chart --reset-values --debug
     ```
 
-5. Confirm the `iam-bridge` pods are running
+5. Confirm the `iam-bridge` pods are running.
 
     ```
     oc get pod -n ${CP4S_NAMESPACE} -lapp=iam-bridge
@@ -56,7 +56,7 @@ To deploy the chart:
 
 ## IBM Cloud Pak for Security and IBM Security Verify Integration
 
-Once the IAM-Bridge chart is deployed, the integration between Verify and the CP4S instance must be setup
+Once the IAM-Bridge Chart is deployed, the integration between IBM Security Verify and the Cloud Pak for Security instance must be setup.
 
 1. Update the playbook.yaml file
 
