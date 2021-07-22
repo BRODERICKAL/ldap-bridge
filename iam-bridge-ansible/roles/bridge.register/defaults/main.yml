@@ -1,0 +1,4 @@
+---
+ldap_id: "IAM-Bridge"
+ldap_type: "IAM-Bridge"
+service_lookup: "iam-bridge-service"

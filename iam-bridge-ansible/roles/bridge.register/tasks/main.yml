@@ -1,0 +1,66 @@
+---
+
+- name: Get CS username
+  shell: oc  -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_username}' | base64 --decode
+  register: cs_username
+
+- name: Get CS password
+  shell: oc  -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 --decode
+  register: cs_password
+
+- name: Get CS host
+  shell: oc get route -A | grep cp-console | awk '{print $3}'
+  register: cs_hostname
+
+- name: set cs host fact
+  set_fact:
+    cs_host: "{{ cs_hostname.stdout }}"  
+
+- name: Retrieve common services token
+  uri:
+    url: "https://{{ cs_host }}/idprovider/v1/auth/identitytoken"
+    method: POST
+    body: "grant_type=password&username={{ cs_username.stdout }}&password={{ cs_password.stdout }}&scope=openid"
+    body_format: raw
+    headers:
+      Content-Type: "application/x-www-form-urlencoded;charset=UTF-8"
+    validate_certs: no
+  register: result
+
+- name: Get connection service
+  shell: oc get svc {{ service_lookup }} -n {{ namespace }} -o jsonpath="{.spec.clusterIP}"
+  register: ldap
+
+- name: get connections
+  uri:
+    url: "https://{{ cs_host }}/idmgmt/identity/api/v1/directory/ldap/list"
+    method: GET
+    status_code: [200]
+    validate_certs: no
+    headers:
+      Authorization: "Bearer {{ result.json.access_token }}"
+  retries: 2
+  delay: 5
+  until: connections.status == 200
+  register: connections
+
+- name: set ldap url
+  set_fact:
+    ldap_url: "ldaps://{{ service_lookup }}.{{ namespace }}.svc.cluster.local:636"
+
+- name: register OpenLDAP Directory
+  uri:
+    url: "https://{{ cs_host }}/idmgmt/identity/api/v1/directory/ldap/onboardDirectory"
+    method: POST
+    body: "{{ lookup('template','openldap.json.j2') }}"
+    body_format: json
+    status_code: [200]
+    validate_certs: no
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{ result.json.access_token }}"
+  retries: 2
+  delay: 5
+  until: ('status' in registration) and (registration.status == 200)
+  register: registration
+  when: connections.json is not search("IAM-Bridge")

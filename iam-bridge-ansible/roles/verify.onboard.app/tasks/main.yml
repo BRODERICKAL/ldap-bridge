@@ -1,0 +1,85 @@
+---
+# tasks file for application_onboarding
+
+- name: inspect previous registration
+  uri:
+    url: '{{ verify_host }}/v1.0/applications?search="q={{ application_name | regex_replace(" ","%20") }}"'
+    method: GET
+    status_code: [200]
+    validate_certs: yes
+    headers:
+      Authorization: "Bearer {{ access_token }}"
+  retries: 5
+  delay: 30
+  until: (application.status == 200)
+  register: application
+
+- name: db
+  debug:
+    var: application
+
+- name: db
+  debug:
+    var: application.json.totalCount
+
+- name: application onboarding block
+  block:
+
+    - name: include attribute
+      include_tasks: attribute_handler.yaml
+
+    - name: register cp4s with verify
+      uri:
+        url: "{{ verify_host }}/v1.0/applications"
+        method: POST
+        body: "{{ lookup('template','application_body.json.j2') }}"
+        body_format: json
+        status_code: [201]
+        validate_certs: yes
+        headers:
+          Content-Type: "application/json"
+          Authorization: "Bearer {{ access_token }}"
+      retries: 5
+      delay: 30
+      until: (registration.status == 201)
+      register: registration
+
+    - name: print application registration information
+      debug: 
+        var: registration  
+
+    - name: register applicationID
+      set_fact:
+        application_id: "{{ registration.json._links.self.href | regex_replace('.*applications\\/') }}"
+        
+    - name: debug
+      debug: 
+        var: application_id
+
+    - name: retrieve verify xml
+      get_url:
+        url: "{{ verify_host }}/appaccess/v1.0/templates/federations/metadata?virtualId=true"
+        dest: /tmp/import.xml
+        headers:
+          Authorization: "Bearer {{ access_token }}"
+
+    - name: import verify xml into common iam
+      shell: cloudctl iam saml-upload-metadata --file /tmp/import.xml
+
+    - name: set birthRightAccess
+      uri:
+        url: "{{ verify_host }}/v1.0/owner/applications/{{ application_id }}/entitlements"
+        method: POST
+        body: "{{ lookup('template','app_user_entitlement.json.j2') }}"
+        body_format: json
+        status_code: [200]
+        validate_certs: yes
+        headers:
+          Content-Type: "application/json"
+          Authorization: "Bearer {{ access_token }}"
+      retries: 5
+      delay: 30
+      until: (registration.status == 200)
+      register: registration
+
+  when: application.json.totalCount == 0

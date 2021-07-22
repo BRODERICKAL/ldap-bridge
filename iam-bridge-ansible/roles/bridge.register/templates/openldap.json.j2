@@ -1,0 +1,13 @@
+{
+      "LDAP_ID": "{{ ldap_id }}",
+      "LDAP_URL": "{{ ldap_url }}",
+      "LDAP_BASEDN": "dc=cp4s,dc=com",
+      "LDAP_BINDDN": "cn={{ client_id }},dc=cp4s,dc=com",
+      "LDAP_BINDPASSWORD": "{{ client_secret | b64encode }}",
+      "LDAP_TYPE": "Custom",
+      "LDAP_USERFILTER": "(&(uid=%v)(objectclass=person))",
+      "LDAP_GROUPFILTER": "(&(cn=%v)(objectclass=groupOfUniqueNames))",
+      "LDAP_USERIDMAP": "*:uid",
+      "LDAP_GROUPIDMAP": "*:cn",
+      "LDAP_GROUPMEMBERIDMAP": "groupOfUniqueNames:uniquemember"
+}

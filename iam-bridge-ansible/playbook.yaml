@@ -1,0 +1,15 @@
+---
+- hosts: local
+  gather_facts: true
+  any_errors_fatal: true
+  roles:
+    - roles/bridge.register
+    - roles/verify.get.token
+    - roles/cs.enable.saml    
+    - roles/verify.onboard.app
+    - ldaps.ca.deploy    
+  vars:
+    verify_host: "{{ VERIFY_URL }}"
+    client_id: "{{ VERIFY_CLIENT_ID }}"
+    client_secret: "{{ VERIFY_CLIENT_SECRET }}"
+    namespace: "{{ CP4S_NAMESPACE }}"

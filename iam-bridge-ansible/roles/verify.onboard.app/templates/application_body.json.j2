@@ -1,0 +1,32 @@
+{
+    "visibleOnLaunchpad": true,
+    "applicationState": true,    
+    "name": "{{ application_name }}",
+    "templateId": "1" ,
+    "description": "{{ application_name }}",
+    "providers": { 
+        "saml": {
+        "assertionConsumerService": [
+            {
+            "url": "{{ assertion_consumer_service_url }}",
+            "index": 0,
+            "default": true
+            }
+        ],
+        "properties": {
+            "companyName": "IBM",
+            "providerId": "{{ provider_id }}",
+            "signAuthnResponse": "true",
+            "generateUniqueID": "true",
+            "uniqueID": "true",
+            "signatureAlgorithm": "RSA-SHA256",
+            "defaultNameIdFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+            "ici_reserved_subjectNameID": "{{ attribute_id }}"
+        }
+        },           
+        "sso": {
+            "userOptions": "saml",
+            "idpInitiatedSSOSupport": "true"
+        }        
+    }    
+}

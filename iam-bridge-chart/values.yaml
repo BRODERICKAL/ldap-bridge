@@ -1,0 +1,14 @@
+global:
+  deploy:
+    name: "iam-bridge"
+    image: "icr.io/ibm-cp-security/cp4saas-iam-bridge:latest"
+    replicas: 3
+  service:
+    name: "iam-bridge-service"
+    port: 636
+    targetPort: 5000
+  bridge:
+    name: "bridge-secret"
+    ci_id: "{{ VERIFY_CLIENT_ID }}"
+    ci_secret: "{{ VERIFY_CLIENT_SECRET }}"
+    ci_url: "{{ VERIFY_URL }}"

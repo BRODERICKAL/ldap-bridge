@@ -1,0 +1,28 @@
+{
+    "emails": [
+        {
+            "type": "work",
+            "value": "{{ item }}"
+        }
+    ],
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:User",
+        "urn:ietf:params:scim:schemas:extension:ibm:2.0:User"
+    ],
+    "userName": "{{ item }}@www.ibm.com",
+    "name": {
+        "givenName": "{{ user_details.json.name.givenName }}",
+        "familyName": "{{ user_details.json.name.familyName }}"
+    },    
+    "addresses": [
+        {
+            "type": "work"
+        }
+    ],
+    "urn:ietf:params:scim:schemas:extension:ibm:2.0:User": {
+        "userCategory": "federated",
+        "customAttributes": [],
+        "realm": "www.ibm.com"
+    },
+    "active": true
+}
