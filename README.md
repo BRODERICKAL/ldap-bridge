@@ -54,7 +54,7 @@ To deploy the chart:
     iam-bridge-5d6b987ccf-9bzw6   1/1     Running   0          3h29m    
     ```
 
-## CP4S and Verify Integration
+## IBM Cloud Pak for Security and a IBM Security Verify Integration
 
 Once the IAM-Bridge chart is deployed, the integration between Verify and the CP4S instance must be setup
 
