@@ -27,10 +27,12 @@ To deploy the Chart:
     CP4S_NAMESPACE=<CP4S_NAMESPACE>
 ```
 
-2. Clone the repository containing the IAM-Bridge Chart.
+2. Clone the repository containing the IAM-Bridge Chart and change directory.
 
     ```
     git clone https://github.com/BRODERICKAL/ldap-bridge.git bridge
+
+    cd bridge/
     ```
 
 3.  Update the chart's values.yaml file.
@@ -58,9 +60,11 @@ To deploy the Chart:
 
 Once the IAM-Bridge Chart is deployed, the integration between IBM Security Verify and the Cloud Pak for Security instance must be setup.
 
-1. Update the playbook.yaml file
+1. Change directory and update the playbook.yaml file
 
     ```
+    cd iam-bridge-ansible/
+
     sed -i '' "s#{{ VERIFY_URL }}#${VERIFY_URL}#; s#{{ VERIFY_CLIENT_ID }}#${VERIFY_CLIENT_ID}#; s#{{ VERIFY_CLIENT_SECRET }}#${VERIFY_CLIENT_SECRET}#; s#{{ CP4S_NAMESPACE }}#${CP4S_NAMESPACE}#" playbook.yaml
     ```
 
