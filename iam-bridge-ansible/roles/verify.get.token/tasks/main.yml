@@ -1,0 +1,17 @@
+---
+# tasks file for application_onboarding
+
+- name: retrieve token
+  uri:
+    url: "{{ verify_host }}/v2.0/endpoint/default/token"
+    method: POST
+    body: "grant_type=client_credentials&client_id={{ client_id }}&client_secret={{ client_secret }}"
+    body_format: raw
+    headers:
+      Content-Type: "application/x-www-form-urlencoded;charset=UTF-8"
+    validate_certs: yes 
+  register: result
+
+- name: expose token
+  set_fact:
+    access_token: "{{ result.json.access_token }}"

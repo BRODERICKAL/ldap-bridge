@@ -1,0 +1,48 @@
+
+- name: check if custom attribute exists
+  uri:
+    url: '{{ verify_host }}/v1.0/attributes?search=name%20contains%20"emaillowercase"'
+    method: GET
+    body_format: json
+    status_code: [200]
+    validate_certs: yes
+    headers:
+      Authorization: "Bearer {{ access_token }}"
+  register: attribute
+
+- name: print attribute query results
+  debug:
+    var: attribute
+
+- name: set attribute when not previously created
+  block:
+    
+    - name:  create custom attribute
+      uri:
+        url: "{{ verify_host }}/v1.0/attributes"
+        method: POST
+        body: "{{ lookup('template','attribute.json.j2') }}"
+        body_format: json
+        status_code: [201]
+        validate_certs: yes
+        headers:
+          Content-Type: "application/json"
+          Authorization: "Bearer {{ access_token }}"
+      retries: 2
+      delay: 10
+      until: (attribute_creation.status == 201)
+      register: attribute_creation
+
+    - name: print attributeID
+      debug:
+        var: attribute_creation.json.id
+
+    - name: register attribute_id
+      set_fact: 
+        attribute_id: "{{ attribute_creation.json.id }}"     
+
+  when: attribute.json|length == 0
+
+
+  
+    

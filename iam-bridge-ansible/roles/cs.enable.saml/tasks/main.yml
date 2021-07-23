@@ -1,0 +1,36 @@
+---
+# tasks file for application_onboarding
+
+- name: enable SAML
+  shell: cloudctl iam saml-enable
+
+- name: pause while SAML is enabled
+  pause:
+    seconds: 30
+
+- name: export metadata
+  shell: cloudctl iam saml-export-metadata --file /tmp/meta.xml
+
+- name: get providerID url
+  shell: cat /tmp/meta.xml | egrep -o "entityID.*?defaultSP" | egrep -o "http.*"
+  register: providerID
+
+- name: print parsed providerID url
+  debug:
+    var: providerID.stdout
+
+- name: get acs url
+  shell: cat /tmp/meta.xml | egrep -o "AssertionConsumerService.*?acs" | egrep -o "http.*"
+  register: acs
+
+- name: print parsed acs url
+  debug:
+    var: acs.stdout
+
+- name: expose providerID url
+  set_fact:
+    provider_id: "{{ providerID.stdout }}"
+
+- name: expose acs url
+  set_fact:
+    assertion_consumer_service_url: "{{ acs.stdout }}"

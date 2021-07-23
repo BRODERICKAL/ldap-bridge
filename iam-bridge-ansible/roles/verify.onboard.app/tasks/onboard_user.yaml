@@ -1,0 +1,34 @@
+---
+
+- name: retrieve user details
+  uri:
+    url: "{{ ibmid_profile_url }}/profilemgmt/run/ibmidprofile/v2/users?email={{ item }}&client_id={{ ibmid_client_id }}&client_secret={{ ibmid_client_secret }}"
+    method: GET
+    status_code: [200]
+    validate_certs: yes
+    headers:
+      Content-Type: "application/json"
+      Acccept: "application/json"
+      isuserauthenticated: "true"
+  retries: 5
+  delay: 30
+  register: user_details
+
+- name: printing user details
+  debug: 
+    var: user_details.json
+  
+- name: onboard customer initial user
+  uri:
+    url: "{{ verify_host }}/v2.0/Users"
+    method: POST
+    body_format: json
+    body: "{{ lookup('template','user_onboarding_template.json.j2') }}"
+    status_code: [201, 409]
+    validate_certs: yes
+    headers:
+      Content-Type: "application/scim+json"
+      Accept: "application/scim+json"
+      Authorization: "Bearer {{ access_token }}"
+  retries: 5
+  delay: 30

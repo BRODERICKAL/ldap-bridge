@@ -1,0 +1,9 @@
+---
+# defaults file for application_onboarding
+
+application_name: "CloudPak for Security"
+assertion_consumer_service_url: ""
+provider_id: ""
+ibmid_profile_url: "https://w3.api.ibm.com"
+ibmid_client_id: ""
+ibmid_client_secret: ""

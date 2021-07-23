@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.global.deploy.name }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    name: iam-bridge
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.global.deploy.name }}
+  replicas: {{ .Values.global.deploy.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.deploy.name }}
+    spec:
+      containers:
+        - name: {{ .Values.global.deploy.name }}
+          image: {{ .Values.global.deploy.image }}
+          imagePullPolicy: Always
+          ports:
+           - containerPort: 5000
+             protocol: TCP
+          securityContext:
+            runAsNonRoot: false
+          env:
+            {{- if .Values.global.bridge.root_ad }}
+            - name: "ROOT_AD"
+              value: {{ .Values.global.bridge.root_ad }}
+            {{- end }}
+            - name: "CI_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.bridge.name }}
+                  key: ci_id
+            - name: "CI_SECRET"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.bridge.name }}
+                  key: ci_secret
+            - name: "CI_URL"
+              value: {{ .Values.global.bridge.ci_url }}
+          readinessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          volumeMounts:
+            - mountPath: /etc/config
+              name: secrets
+              readOnly: true
+      volumes:
+        - name: secrets
+          projected:
+            sources:
+              - secret:
+                  name: {{ .Values.global.deploy.name }}-tls
+                  items:
+                    - key: tls.crt
+                      path: public.pem
+                    - key: tls.key
+                      path: private.pem
+              - secret:
+                  name: cp4s-truststore
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+      serviceAccountName: cp4s-application
+      serviceAccount: cp4s-application

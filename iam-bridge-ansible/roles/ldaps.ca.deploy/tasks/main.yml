@@ -1,0 +1,25 @@
+---
+
+- name: extract ca_cert
+  shell: oc get secret cp4s-truststore -o jsonpath="{.data.ca\\.crt}" -n {{ namespace }}
+  register: ldaps_ca_cert
+  
+- name: register current ldaps ca secret
+  shell: oc get secret platform-auth-ldaps-ca-cert -o jsonpath='{.data.certificate}' -n ibm-common-services
+  register: ldaps_ca_secret
+
+- name: merge current ldaps ca with supplied ldaps ca
+  script: files/merge_ca.py "{{ ldaps_ca_secret.stdout }}" "{{ ldaps_ca_cert.stdout }}"
+  register: merge_result
+
+- block:
+    - name: patch ldaps ca secret
+      shell: >
+        oc patch secret platform-auth-ldaps-ca-cert
+        -p='{"data":{"certificate":"{{ merge_result.stdout | b64encode }}"}}'
+        -n ibm-common-services
+
+    - name: restart auth-idp deployment to pick up new ca certificate
+      shell: oc delete $(oc get pods -l app=auth-idp -o name -n ibm-common-services) -n ibm-common-services
+
+  when: merge_result.stdout != ""

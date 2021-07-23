@@ -1,0 +1,25 @@
+{
+    "constraints": {
+        "writeAccessForEndUser": true,
+        "mandatory": false,
+        "unique": false
+    },
+    "datatype": "string",
+    "name": "emaillowercase",
+    "schemaAttribute": {
+        "customAttribute": true,
+        "name": "customAttribute1",
+        "scimName": "emaillowercase"
+    },
+    "scope": "tenant",
+    "sourceType": "schema",
+    "tags": [
+        "sso"
+    ],
+    "credNameOverrides": {
+        "www.ibm.com": "email"
+    },
+    "function": {
+        "name": "lowercase"
+    }
+}
