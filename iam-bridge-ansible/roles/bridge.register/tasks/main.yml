@@ -14,7 +14,15 @@
 
 - name: set cs host fact
   set_fact:
-    cs_host: "{{ cs_hostname.stdout }}"  
+    cs_host: "{{ cs_hostname.stdout }}"
+
+- name: set cs user fact
+  set_fact:
+    cs_user: "{{ cs_username.stdout }}"
+
+- name: set cs pass fact
+  set_fact:
+    cs_pass: "{{ cs_password.stdout }}"        
 
 - name: Retrieve common services token
   uri:
@@ -59,7 +67,7 @@
     headers:
       Content-Type: "application/json"
       Authorization: "Bearer {{ result.json.access_token }}"
-  retries: 2
+  retries: 3
   delay: 5
   until: ('status' in registration) and (registration.status == 200)
   register: registration

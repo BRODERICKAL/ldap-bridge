@@ -12,7 +12,6 @@ def parse_ca_certs(ca_str):
     ca_certs = set()
 
     cert = ""
-
     for line in ca_str.splitlines():
         cert += line + '\n'
         if '-----END CERTIFICATE-----' in line:
@@ -21,12 +20,11 @@ def parse_ca_certs(ca_str):
 
     return ca_certs
 
-
 current_ca_encoded = sys.argv[1]
 target_ca_encoded = sys.argv[2]
 
-current_certs = parse_ca_certs(base64.b64decode(current_ca_encoded))
-new_certs = parse_ca_certs(base64.b64decode(target_ca_encoded))
+current_certs = parse_ca_certs(base64.b64decode(current_ca_encoded).decode())
+new_certs = parse_ca_certs(base64.b64decode(target_ca_encoded).decode())
 
 additional_certs = set()
 
@@ -42,4 +40,4 @@ if not additional_certs:
 current_certs.update(additional_certs)
 
 for cert in current_certs:
-    print(cert.public_bytes(Encoding.PEM), end='')
+    print(cert.public_bytes(Encoding.PEM).decode('utf-8'), end='')
