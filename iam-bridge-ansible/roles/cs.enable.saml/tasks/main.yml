@@ -1,5 +1,23 @@
 ---
-# tasks file for application_onboarding
+
+- name: retrieve token for future oc login
+  shell: oc whoami -t
+  register: token_roks
+
+- name: set token fact
+  set_fact:
+    roks_token: "{{ token_roks.stdout }}"
+
+- name: retrieve roks address for future oc login
+  shell: oc get cm ibmcloud-cluster-info -n kube-public -o jsonpath='{.data.cluster_kube_apiserver_host}:{.data.cluster_kube_apiserver_port}'
+  register: address_roks
+
+- name: set roks fact
+  set_fact:
+    roks_address: "{{ address_roks.stdout }}"
+
+- name: login with cloudctl
+  shell: cloudctl login -a {{ cs_host }} -u {{ cs_user }} -p {{ cs_pass }} -n {{ namespace }}
 
 - name: enable SAML
   shell: cloudctl iam saml-enable

@@ -12,7 +12,11 @@ This document describes the steps to Install the `IAM-Bridge` Chart for the inte
 
 1. Ensure you have [helm 3](https://www.ibm.com/docs/en/cloud-paks/cp-security/1.7.0?topic=tasks-installing-developer-tools#helm-v324) installed in your PATH.
 
-2. Ensure you are authenticated with an administrator user in your Openshift 4.6+ cluster.
+2. Ensure you have [cloudctl](https://www.ibm.com/docs/en/cloud-paks/cp-security/1.7.0?topic=tasks-installing-developer-tools#cloudpak-cli) installed in your PATH.
+
+3. Ensure you are authenticated with an administrator user in your Openshift 4.6+ cluster.
+
+4. Ensure you have `python3` installed in your PATH along with Ansible, which can be installed with `pip3 install ansible`.
 
 ## IAM-Bridge Chart Deployment
 
@@ -21,7 +25,8 @@ To deploy the Chart:
 1. Set the required Environment variables.
 
 ```
-    VERIFY_URL=<YOUR_VERIFY_URL>
+    VERFY_CONNECTION_NAME="IAM-Bridge"
+    VERIFY_URL=<YOUR_VERIFY_URL>    
     VERIFY_CLIENT_ID=<YOUR_CLIENT_ID>
     VERIFY_CLIENT_SECRET=<YOUR_CLIENT_SECRET>
     CP4S_NAMESPACE=<CP4S_NAMESPACE>
@@ -38,7 +43,7 @@ To deploy the Chart:
 3.  Update the chart's values.yaml file.
 
     ```
-    sed -i '' "s#{{ VERIFY_URL }}#${VERIFY_URL}#; s#{{ VERIFY_CLIENT_ID }}#${VERIFY_CLIENT_ID}#; s#{{ VERIFY_CLIENT_SECRET }}#${VERIFY_CLIENT_SECRET}#" iam-bridge-chart/values.yaml
+    sed -i.bak -e "s#{{ VERIFY_URL }}#${VERIFY_URL}#; s#{{ VERIFY_CLIENT_ID }}#${VERIFY_CLIENT_ID}#; s#{{ VERIFY_CLIENT_SECRET }}#${VERIFY_CLIENT_SECRET}#" iam-bridge-chart/values.yaml
     ```
 
 4. Install the Chart.
@@ -65,11 +70,11 @@ Once the IAM-Bridge Chart is deployed, the integration between IBM Security Veri
     ```
     cd iam-bridge-ansible/
 
-    sed -i '' "s#{{ VERIFY_URL }}#${VERIFY_URL}#; s#{{ VERIFY_CLIENT_ID }}#${VERIFY_CLIENT_ID}#; s#{{ VERIFY_CLIENT_SECRET }}#${VERIFY_CLIENT_SECRET}#; s#{{ CP4S_NAMESPACE }}#${CP4S_NAMESPACE}#" playbook.yaml
+    sed -i.bak -e "s#{{ VERIFY_URL }}#${VERIFY_URL}#; s#{{ VERIFY_CLIENT_ID }}#${VERIFY_CLIENT_ID}#; s#{{ VERIFY_CLIENT_SECRET }}#${VERIFY_CLIENT_SECRET}#; s#{{ CP4S_NAMESPACE }}#${CP4S_NAMESPACE}#; s#{{ VERFY_CONNECTION_NAME }}#${VERFY_CONNECTION_NAME}#" playbook.yaml
     ```
 
 2. Run the ansible playbook
 
     ```
-    ansible-playbook -i hosts playbook.yaml
+    python3 $(which ansible-playbook) -i hosts playbook.yaml
     ```

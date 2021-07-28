@@ -1,5 +1,13 @@
 ---
 
+- name: install cryptography python package
+  pip:
+    name: cryptography
+    executable: pip3
+    
+- name: oc login
+  shell: oc login --token="{{ roks_token }}" --server="{{ roks_address }}" --insecure-skip-tls-verify
+
 - name: extract ca_cert
   shell: oc get secret cp4s-truststore -o jsonpath="{.data.ca\\.crt}" -n {{ namespace }}
   register: ldaps_ca_cert
@@ -10,6 +18,9 @@
 
 - name: merge current ldaps ca with supplied ldaps ca
   script: files/merge_ca.py "{{ ldaps_ca_secret.stdout }}" "{{ ldaps_ca_cert.stdout }}"
+  args:
+      executable: python3
+
   register: merge_result
 
 - block:

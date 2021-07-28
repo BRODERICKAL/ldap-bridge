@@ -13,3 +13,4 @@
     client_id: "{{ VERIFY_CLIENT_ID }}"
     client_secret: "{{ VERIFY_CLIENT_SECRET }}"
     namespace: "{{ CP4S_NAMESPACE }}"
+    ldap_id: "{{ VERFY_CONNECTION_NAME }}"
