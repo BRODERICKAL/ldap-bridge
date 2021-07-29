@@ -14,6 +14,11 @@
   debug:
     var: attribute
 
+- name: register attribute_id when previously created
+  set_fact: 
+    attribute_id: "{{ attribute.json[0].id }}"
+  when: attribute.json|length > 0
+
 - name: set attribute when not previously created
   block:
     
@@ -37,12 +42,8 @@
       debug:
         var: attribute_creation.json.id
 
-    - name: register attribute_id
+    - name: register attribute_id after fresh creation
       set_fact: 
-        attribute_id: "{{ attribute_creation.json.id }}"     
+        attribute_id: "{{ attribute_creation.json.id }}"
 
   when: attribute.json|length == 0
-
-
-  
-    
