@@ -25,7 +25,7 @@ To deploy the Chart:
 1. Set the required Environment variables.
 
 ```
-    VERFY_CONNECTION_NAME="IAM-Bridge"
+    VERIFY_CONNECTION_NAME="IAM-Bridge"
     VERIFY_URL=<YOUR_VERIFY_URL>    
     VERIFY_CLIENT_ID=<YOUR_CLIENT_ID>
     VERIFY_CLIENT_SECRET=<YOUR_CLIENT_SECRET>
@@ -70,7 +70,7 @@ Once the IAM-Bridge Chart is deployed, the integration between IBM Security Veri
     ```
     cd iam-bridge-ansible/
 
-    sed -i.bak -e "s#{{ VERIFY_URL }}#${VERIFY_URL}#; s#{{ VERIFY_CLIENT_ID }}#${VERIFY_CLIENT_ID}#; s#{{ VERIFY_CLIENT_SECRET }}#${VERIFY_CLIENT_SECRET}#; s#{{ CP4S_NAMESPACE }}#${CP4S_NAMESPACE}#; s#{{ VERFY_CONNECTION_NAME }}#${VERFY_CONNECTION_NAME}#" playbook.yaml
+    sed -i.bak -e "s#{{ VERIFY_URL }}#${VERIFY_URL}#; s#{{ VERIFY_CLIENT_ID }}#${VERIFY_CLIENT_ID}#; s#{{ VERIFY_CLIENT_SECRET }}#${VERIFY_CLIENT_SECRET}#; s#{{ CP4S_NAMESPACE }}#${CP4S_NAMESPACE}#; s#{{ VERIFY_CONNECTION_NAME }}#${VERIFY_CONNECTION_NAME}#" playbook.yaml
     ```
 
 2. Run the ansible playbook
