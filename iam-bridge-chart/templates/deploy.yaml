@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         app: {{ .Values.global.deploy.name }}
+        cp4s-internet: allow
     spec:
       containers:
         - name: {{ .Values.global.deploy.name }}
