@@ -1,7 +1,7 @@
 global:
   deploy:
     name: "iam-bridge"
-    image: "icr.io/ibm-cp-security/cp4saas-iam-bridge:latest"
+    image: "icr.io/cpopen/cp4s/cp4saas-iam-bridge:latest"
     replicas: 3
   service:
     name: "iam-bridge-service"
